@@ -15,7 +15,7 @@ userRouter.post('/register',async(req,res)=>{
     const user = await UserModel.find({unique});
     console.log(user)
     if(user[0]){
-        res.send('user already exist')
+        res.send({"msg":'user already exist'})
     }else{
         try{
             bcrypt.hash(password,3,async(err,hash)=>{
@@ -24,11 +24,11 @@ userRouter.post('/register',async(req,res)=>{
                 }else{
                     const user = new UserModel({name,password:hash,city,unique,score})
                     await user.save();
-                    res.send('registered')
+                    res.send({"msg":'registered'})
                 }
             })
         }catch(e){
-            res.send(e.message)
+            res.send({"e":e.message})
         }
     }
    
@@ -45,14 +45,14 @@ userRouter.post('/login', async(req,res)=>{
                 if(result){
                     res.send({"token":token})
                 }else{
-                    res.send("password mismatched")
+                    res.send({"msg":"password mismatched"})
                 }
             })
         }else{
-            res.send("user not found")
+            res.send({"msg":"user not found"})
         }
     }catch(e){
-        res.send(e)
+        res.send({"e":e.message})
     }
 })
 
@@ -63,7 +63,7 @@ userRouter.get('/',async(req,res)=>{
        const users =await UserModel.find();
         res.send(users)
     }catch(e){
-        res.send(e.message)
+        res.send({"e":e.message})
     }
 })
 
@@ -75,9 +75,9 @@ userRouter.patch('/update',async(req,res)=>{
        const user = await UserModel.findOne({_id : ID});
        
         await UserModel.findByIdAndUpdate({_id:ID},payload);
-        res.send("updated")
+        res.send({"msg":"updated"})
    }catch(e){
-      res.send(e.message)
+      res.send({"e":e.message})
    }
 })
 

@@ -7,7 +7,8 @@ const UserSchema = mongoose.Schema({
    unique : String,
    score : Number
 },{
-    versionKey : false
+    versionKey : false,
+    timestamps : true
 })
 
 const UserModel = mongoose.model('user',UserSchema);
