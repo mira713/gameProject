@@ -1,7 +1,6 @@
 const express = require('express');
 const userRouter = express.Router();
 const {UserModel} = require('../model/userModel');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const {authenticate} = require('../middleware/authenticate');
@@ -33,9 +32,8 @@ userRouter.post('/register',async(req,res)=>{
 
 userRouter.post('/login', async(req,res)=>{
     const {name,password} = req.body;
-    let unique = (name+password)
     try{
-        const user = await UserModel.find({unique});
+        const user = await UserModel.find({name,password});
         
         if(user.length){
             const token = jwt.sign({userId : user[0]._id},process.env.key);
@@ -70,9 +68,28 @@ userRouter.use(authenticate);
 userRouter.patch('/update',async(req,res)=>{
     let ID = req.body.user
    let payload = req.body
+   
    try{
-       
-        await UserModel.findByIdAndUpdate({_id:ID},payload);
+    let{win, lost, level} = await UserModel.findOne({_id : ID})
+    
+    if(payload.win){
+        win = win + payload.win
+    }
+
+    if(payload.lost){
+        lost += payload.lost  
+    }
+
+    if(payload.level){
+        level += payload.level
+    }
+
+    await UserModel.findByIdAndUpdate({_id:ID},{
+        win,
+        lost,
+        level
+    });
+
         res.send({"msg":"updated"})
    }catch(e){
       res.send({"e":e.message})
