@@ -56,7 +56,7 @@ userRouter.post('/login', async(req,res)=>{
     }
 })
 
-userRouter.use(authenticate);
+
 
 userRouter.get('/',async(req,res)=>{
     try{
@@ -66,7 +66,7 @@ userRouter.get('/',async(req,res)=>{
         res.send({"e":e.message})
     }
 })
-
+userRouter.use(authenticate);
 
 userRouter.patch('/update',async(req,res)=>{
     let ID = req.body.user
