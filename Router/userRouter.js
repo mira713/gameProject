@@ -69,10 +69,8 @@ userRouter.use(authenticate);
 
 userRouter.patch('/update',async(req,res)=>{
     let ID = req.body.user
-    let score = req.body.score
-    let payload = {score}
+   let payload = req.body
    try{
-       const user = await UserModel.findOne({_id : ID});
        
         await UserModel.findByIdAndUpdate({_id:ID},payload);
         res.send({"msg":"updated"})
