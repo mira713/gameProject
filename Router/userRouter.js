@@ -12,21 +12,18 @@ userRouter.post('/register',async(req,res)=>{
     const {name,password,city} = req.body;
     const unique = (name+password)
     let score = req.body.score? req.body.score : 0;
+    let lost = req.body.lost? req.body.lost : 0;
+    let win = req.body.win? req.body.win : 0;
+    let level = req.body.level? req.body.level : 1
     const user = await UserModel.find({unique});
     console.log(user)
     if(user[0]){
         res.send({"msg":'user already exist'})
     }else{
         try{
-            bcrypt.hash(password,3,async(err,hash)=>{
-                if(err){
-                    res.send('something went wrong while hashing the password');
-                }else{
-                    const user = new UserModel({name,password:hash,city,unique,score})
+                    const user = new UserModel({name,password,city,unique,score,lost,win,level})
                     await user.save();
                     res.send({"msg":'registered'})
-                }
-            })
         }catch(e){
             res.send({"e":e.message})
         }
@@ -39,15 +36,17 @@ userRouter.post('/login', async(req,res)=>{
     let unique = (name+password)
     try{
         const user = await UserModel.find({unique});
-        const token = jwt.sign({userId : user[0]._id},process.env.key);
+        
         if(user.length){
-            bcrypt.compare(password,user[0].password,function(err,result){
-                if(result){
-                    res.send({"token":token})
-                }else{
-                    res.send({"msg":"password mismatched"})
-                }
-            })
+            const token = jwt.sign({userId : user[0]._id},process.env.key);
+            // bcrypt.compare(password,user[0].password,function(err,result){
+            //     if(result){
+            //         res.send({"token":token})
+            //     }else{
+            //         res.send({"msg":"password mismatched"})
+            //     }
+            // })
+            res.send({"token":token})
         }else{
             res.send({"msg":"user not found"})
         }

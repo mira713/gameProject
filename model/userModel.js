@@ -5,7 +5,10 @@ const UserSchema = mongoose.Schema({
    city : String,
    password : String,
    unique : String,
-   score : Number
+   score : Number,
+   lost : Number,
+   win : Number,
+   level : Number
 },{
     versionKey : false,
     timestamps : true
