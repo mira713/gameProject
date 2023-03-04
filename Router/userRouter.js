@@ -80,9 +80,10 @@ userRouter.patch('/update',async(req,res)=>{
         lost += payload.lost  
     }
 
-    if(payload.level){
-        level += payload.level
+    if(payload.level>level){
+        level = payload.level
     }
+ 
 
     await UserModel.findByIdAndUpdate({_id:ID},{
         win,
